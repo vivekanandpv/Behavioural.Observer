@@ -6,16 +6,13 @@ namespace Behavioural.Observer
     {
         static void Main(string[] args)
         {
-            Subject<string> stringSubject = new ConcreteSubject<string>("Bengaluru");
+            var stringSubject = new Subject<string>("Bengaluru");
 
-            Observer<string> smartphone = new SmartphoneObserver<string>(stringSubject);
-            Observer<string> email = new EmailObserver<string>(stringSubject);
+            stringSubject.Register(m => Console.WriteLine($"Observer 1: {m}")); 
+            stringSubject.Register(m => Console.WriteLine($"Observer 2: {m}"));
+            stringSubject.Register(m => Console.WriteLine($"Observer 3: {m}"));
 
-            stringSubject.Emit();
-
-            Console.WriteLine("------------------------");
-
-            smartphone.Transmit("Mumbai");
+            stringSubject.Value = "Mumbai";
         }
     }
 }

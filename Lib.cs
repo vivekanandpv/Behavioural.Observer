@@ -4,28 +4,28 @@ using System.Text;
 
 namespace Behavioural.Observer
 {
-    public abstract class Subject<T>
+    public class Subject<T>
     {
-        private readonly IList<Observer<T>> _observers;
+        private readonly IList<Action<T>> _observers;
         private T element;
 
 
-        protected Subject(T defaultValue)
+        public Subject(T defaultValue)
         {
-            _observers = new List<Observer<T>>();
+            _observers = new List<Action<T>>();
             element = defaultValue;
         }
 
-        public void Register(Observer<T> observer)
+        public void Register(Action<T> observer)
         {
             this._observers.Add(observer);
         }
 
-        public void Emit()
+        public void Emit(T value)
         {
             foreach (var observer in _observers)
             {
-                observer.Update();
+                observer(value);
             }
         }
 
@@ -38,50 +38,8 @@ namespace Behavioural.Observer
             set
             {
                 element = value;
-                Emit();
+                Emit(element);
             }
         }
-    }
-
-    public abstract class Observer<T>
-    {
-        protected readonly Subject<T> _subject;
-
-        protected Observer(Subject<T> subject)
-        {
-            _subject = subject;
-            this._subject.Register(this);
-        }
-
-        public void Update()
-        {
-            Console.WriteLine($"{this}: Value: {this._subject.Value}");
-        }
-
-        public void Transmit(T newValue)
-        {
-            this._subject.Value = newValue;
-        }
-    }
-
-    public class ConcreteSubject<T> : Subject<T>
-    {
-        public ConcreteSubject(T defaultValue) : base(defaultValue)
-        {
-        }
-    }
-
-    public class SmartphoneObserver<T> : Observer<T>
-    {
-        public SmartphoneObserver(Subject<T> subject): base(subject)
-        {
-        }
-    }
-
-    public class EmailObserver<T> : Observer<T>
-    {
-        public EmailObserver(Subject<T> subject) : base(subject)
-        {
-        }
-    }
+    }    
 }
